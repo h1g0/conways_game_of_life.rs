@@ -21,7 +21,7 @@ struct Field{
 }
 
 impl Cell{
-    fn set_next_gen_state(){
+    fn set_next_gen_state(cell: &Vec<Cell>){
         unimplemented!();
     }
 }
