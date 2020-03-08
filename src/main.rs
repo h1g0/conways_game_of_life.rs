@@ -20,6 +20,12 @@ struct Field{
     cell_size: Size,
 }
 
+impl Cell{
+    fn set_next_gen_state(){
+        unimplemented!();
+    }
+}
+
 impl Field{
     fn init() -> Field{
         let xy_num = (64,48);
@@ -41,6 +47,22 @@ impl Field{
                 height: (wh.1 / xy_num.1) as f64,
             }
         }
+    }
+
+    fn draw_field(){
+        unimplemented!();
+    }
+
+    fn apply_current_gen_state(){
+        unimplemented!();
+    }
+
+    fn draw_cells(){
+        unimplemented!();
+    }
+
+    fn set_next_gen_state(){
+        unimplemented!();
     }
 }
 
