@@ -77,7 +77,6 @@ fn main() {
 
     while let Some(e) = window.next() {
         window.draw_2d(&e, |_c, g, _d| {
-
             clear([0.0, 0.0, 0.0, 1.0], g);
             _c.draw_state.blend(draw_state::Blend::Add);
             //ここにゲームの処理何か書く
