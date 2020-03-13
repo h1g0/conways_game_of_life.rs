@@ -48,10 +48,19 @@ impl Field{
         unimplemented!();
     }
 
-    pub fn set_current_gen_state(&mut self){
+    pub fn update_state(&mut self){
         for c in &mut self.cell {
             c.alive = c.alive_in_next_gen;
         }
+    }
+
+    pub fn set_state(&mut self, id: usize, alive:bool){
+        self.cell[id].alive = alive;
+    }
+
+    pub fn set_state_for_all_cells(&mut self, alive:Vec<bool>){
+        // TODO: ここから
+        unimplemented!();
     }
 
     pub fn draw_cells(){
@@ -65,12 +74,103 @@ impl Field{
     fn get_next_gen_state_for_one_cell(&self, id: usize)->bool{
         unimplemented!();
     }
+
 }
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    mod cell{
+        #[test]
+        fn cell_dies_for_no_neighbor() {
+            let mut result;
+            let live = vec![
+                false,false,false,
+                false,true,false,
+                false,false,false,
+            ];
+            result = false;
+            assert_eq!(result,false);
+
+            let dead = vec![
+                false,false,false,
+                false,false,false,
+                false,false,false,
+            ];
+            result = false;
+            assert_eq!(result,false);
+        }
+        #[test]
+        fn cell_dies_for_1_neighbor() {
+            let mut result;
+            let live = vec![
+                false,true,false,
+                false,true,false,
+                false,false,false,
+            ];
+            result = false;
+            assert_eq!(result,false);
+
+            let dead = vec![
+                false,true,false,
+                false,false,false,
+                false,false,false,
+            ];
+            result = false;
+            assert_eq!(result,false);
+        }
+        #[test]
+        fn cell_lives_for_2_neighbors() {
+            let mut result;
+            let live = vec![
+                false,true,true,
+                false,true,false,
+                false,false,false,
+            ];
+            result = true;
+            assert_eq!(result,true);
+            let dead = vec![
+                false,true,true,
+                false,false,false,
+                false,false,false,
+            ];
+            result = false;
+            assert_eq!(result,false);
+        }
+        #[test]
+        fn cell_lives_borns_for_3_neighbors() {
+            let mut result;
+            let live = vec![
+                false,true,true,
+                false,true,false,
+                false,true,false,
+            ];
+            result = true;
+            assert_eq!(result,true);
+            let dead = vec![
+                false,true,true,
+                false,false,false,
+                false,true,false,
+            ];
+            result = true;
+            assert_eq!(result,true);
+        }
+        #[test]
+        fn cell_dies_for_4_or_more_neighbors(){
+            let mut result;
+            let live = vec![
+                false,true,true,
+                false,true,false,
+                false,true,true,
+            ];
+            result = false;
+            assert_eq!(result,false);
+            let dead = vec![
+                false,true,true,
+                false,false,false,
+                false,true,true,
+            ];
+            result = false;
+            assert_eq!(result,false);
+        }
     }
 }
