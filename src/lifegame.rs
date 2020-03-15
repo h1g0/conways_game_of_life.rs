@@ -159,6 +159,7 @@ impl Field{
     }
 
     fn get_next_gen_state_for_one_cell(&self, id: usize)->bool{
+        //TODO: ここから
         unimplemented!();
     }
 
