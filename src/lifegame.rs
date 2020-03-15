@@ -74,12 +74,12 @@ impl Field{
         return self.cell[id].alive;
     }
 
-    fn get_neighbor_id(self,id:usize, neighbor:Neighbor)->Option<usize>{
+    fn get_neighbor_id(&self,id:usize, neighbor:Neighbor)->Option<usize>{
         if id >= self.cell.len(){
             return None;
         }
         let left = if id % self.x_num == 0{false}else{true};
-        let upper = if id - self.x_num < 0 {false}else{true};
+        let upper = if ((id - self.x_num) as isize) < 0 {false}else{true};
         let right = if id % self.x_num == self.x_num - 1{false}else{true};
         let lower = if id + self.x_num >= self.cell.len(){false}else{true};
         match neighbor{
