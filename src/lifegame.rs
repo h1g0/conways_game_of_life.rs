@@ -60,7 +60,13 @@ impl Field{
 
     pub fn set_state_for_all_cells(&mut self, alive:Vec<bool>){
         // TODO: ここから
-        unimplemented!();
+        for i in 0..self.cell.len(){
+            if i < alive.len(){
+                self.cell[i].alive = alive[i];
+            }else{
+                self.cell[i].alive = false;
+            }
+        }
     }
 
     pub fn draw_cells(){
