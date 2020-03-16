@@ -79,7 +79,8 @@ impl Field{
             return None;
         }
         let left = if id % self.x_num == 0{false}else{true};
-        let upper = if ((id - self.x_num) as isize) < 0 {false}else{true};
+        let upper = 
+        if (id as isize) - (self.x_num as isize) < 0 {false}else{true};
         let right = if id % self.x_num == self.x_num - 1{false}else{true};
         let lower = if id + self.x_num >= self.cell.len(){false}else{true};
         match neighbor{
@@ -185,18 +186,21 @@ mod tests {
             false,false,false,
             false,false,false,
         ];
-        result = false;
+        field.set_state_for_all_cells(dead);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,false);
     }
     #[test]
     fn cell_dies_for_1_neighbor() {
+        let mut field = super::Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,false,
             false,true,false,
             false,false,false,
         ];
-        result = false;
+        field.set_state_for_all_cells(live);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,false);
 
         let dead = vec![
@@ -204,61 +208,71 @@ mod tests {
             false,false,false,
             false,false,false,
         ];
-        result = false;
+        field.set_state_for_all_cells(dead);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,false);
     }
     #[test]
     fn cell_lives_for_2_neighbors() {
+        let mut field = super::Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,true,
             false,true,false,
             false,false,false,
         ];
-        result = true;
+        field.set_state_for_all_cells(live);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,true);
         let dead = vec![
             false,true,true,
             false,false,false,
             false,false,false,
         ];
-        result = false;
+        field.set_state_for_all_cells(dead);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,false);
     }
     #[test]
     fn cell_lives_borns_for_3_neighbors() {
+        let mut field = super::Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,true,
             false,true,false,
             false,true,false,
         ];
-        result = true;
+        field.set_state_for_all_cells(live);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,true);
         let dead = vec![
             false,true,true,
             false,false,false,
             false,true,false,
         ];
-        result = true;
+        field.set_state_for_all_cells(dead);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,true);
     }
     #[test]
     fn cell_dies_for_4_or_more_neighbors(){
+        let mut field = super::Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,true,
             false,true,false,
             false,true,true,
         ];
-        result = false;
+        field.set_state_for_all_cells(live);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,false);
         let dead = vec![
             false,true,true,
             false,false,false,
             false,true,true,
         ];
-        result = false;
+        field.set_state_for_all_cells(dead);
+        result = field.get_next_gen_state_for_one_cell(4);
         assert_eq!(result,false);
     }
 }
