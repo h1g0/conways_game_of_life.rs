@@ -160,8 +160,27 @@ impl Field{
     }
 
     fn get_next_gen_state_for_one_cell(&self, id: usize)->bool{
-        //TODO: ここから
-        unimplemented!();
+        let alive_neighbor = 0
+        + if self.get_neighbor_state(id, Neighbor::UpperLeft  ){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::UpperMiddle){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::UpperRight ){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::Left       ){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::Right      ){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::LowerLeft  ){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::LowerMiddle){1}else{0}
+        + if self.get_neighbor_state(id, Neighbor::LowerRight ){1}else{0};
+
+        if self.get_state(id){
+            match alive_neighbor{
+                2|3 => true,
+                _=> false,
+            }
+        }else{
+            match alive_neighbor{
+                3 => true,
+                _=> false,
+            }
+        }
     }
 
 }
