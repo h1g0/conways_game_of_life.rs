@@ -182,11 +182,12 @@ impl Field{
             }
         }
     }
-
 }
 
 #[cfg(test)]
 mod tests {
+    //TODO! get_neighbor_idのテスト
+
     #[test]
     fn cell_dies_for_no_neighbor() {
         let mut field = super::Field::new((3,3), (8,8));
