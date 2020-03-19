@@ -187,6 +187,40 @@ impl Field{
 #[cfg(test)]
 mod tests {
     //TODO! get_neighbor_idのテスト
+    #[test]
+    fn neighbor_id_test(){
+        let field = super::Field::new((3,3), (8,8));
+        //012
+        //345
+        //678
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::Left),None);
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::Right),Some(1));
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::LowerLeft),None);
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::LowerMiddle),Some(3));
+        assert_eq!(field.get_neighbor_id(0,super::Neighbor::LowerRight),Some(4));
+
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::Left),Some(0));
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::Right),Some(2));
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::LowerLeft),Some(3));
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::LowerMiddle),Some(4));
+        assert_eq!(field.get_neighbor_id(1,super::Neighbor::LowerRight),Some(5));
+
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::Left),Some(1));
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::Right),None);
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerLeft),Some(4));
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerMiddle),Some(5));
+        assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerRight),None);
+
+    }
 
     #[test]
     fn cell_dies_for_no_neighbor() {
