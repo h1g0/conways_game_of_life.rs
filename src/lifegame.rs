@@ -220,6 +220,15 @@ mod tests {
         assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerMiddle),Some(5));
         assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerRight),None);
 
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::Left),Some(1));
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::Right),None);
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::LowerLeft),Some(4));
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::LowerMiddle),Some(5));
+        assert_eq!(field.get_neighbor_id(3,super::Neighbor::LowerRight),None);
+
     }
 
     #[test]
