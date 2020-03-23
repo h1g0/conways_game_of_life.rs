@@ -1,6 +1,9 @@
 extern crate piston_window;
 use piston_window::*;
 
+extern crate rand;
+use rand::Rng;
+
 #[derive(Clone,Copy)]
 struct Cell{
     id: usize,
@@ -150,13 +153,20 @@ impl Field{
             }
         }
     }
+    pub fn set_random_state_for_all_cels(&mut self){
+        for i in 0..self.cell.len(){
+            // TODO: ここから
+        }
+    }
 
     pub fn draw_cells(){
         unimplemented!();
     }
 
-    pub fn set_next_gen_state(){
-        unimplemented!();
+    pub fn set_next_gen_state(&mut self){
+        for i in 0..self.cell.len(){
+            self.cell[i].alive_in_next_gen = self.get_next_gen_state_for_one_cell(i);
+        }
     }
 
     fn get_next_gen_state_for_one_cell(&self, id: usize)->bool{
@@ -186,98 +196,99 @@ impl Field{
 
 #[cfg(test)]
 mod tests {
-    //TODO! get_neighbor_idのテスト
+    use super::*;
+
     #[test]
     fn neighbor_id_test(){
-        let field = super::Field::new((3,3), (8,8));
+        let field = Field::new((3,3), (8,8));
         //012
         //345
         //678
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::UpperLeft),None);
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::UpperMiddle),None);
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::UpperRight),None);
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::Left),None);
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::Right),Some(1));
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::LowerLeft),None);
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::LowerMiddle),Some(3));
-        assert_eq!(field.get_neighbor_id(0,super::Neighbor::LowerRight),Some(4));
+        assert_eq!(field.get_neighbor_id(0,Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(0,Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(0,Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(0,Neighbor::Left),None);
+        assert_eq!(field.get_neighbor_id(0,Neighbor::Right),Some(1));
+        assert_eq!(field.get_neighbor_id(0,Neighbor::LowerLeft),None);
+        assert_eq!(field.get_neighbor_id(0,Neighbor::LowerMiddle),Some(3));
+        assert_eq!(field.get_neighbor_id(0,Neighbor::LowerRight),Some(4));
 
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::UpperLeft),None);
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::UpperMiddle),None);
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::UpperRight),None);
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::Left),Some(0));
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::Right),Some(2));
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::LowerLeft),Some(3));
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::LowerMiddle),Some(4));
-        assert_eq!(field.get_neighbor_id(1,super::Neighbor::LowerRight),Some(5));
+        assert_eq!(field.get_neighbor_id(1,Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(1,Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(1,Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(1,Neighbor::Left),Some(0));
+        assert_eq!(field.get_neighbor_id(1,Neighbor::Right),Some(2));
+        assert_eq!(field.get_neighbor_id(1,Neighbor::LowerLeft),Some(3));
+        assert_eq!(field.get_neighbor_id(1,Neighbor::LowerMiddle),Some(4));
+        assert_eq!(field.get_neighbor_id(1,Neighbor::LowerRight),Some(5));
 
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::UpperLeft),None);
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::UpperMiddle),None);
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::UpperRight),None);
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::Left),Some(1));
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::Right),None);
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerLeft),Some(4));
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerMiddle),Some(5));
-        assert_eq!(field.get_neighbor_id(2,super::Neighbor::LowerRight),None);
+        assert_eq!(field.get_neighbor_id(2,Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(2,Neighbor::UpperMiddle),None);
+        assert_eq!(field.get_neighbor_id(2,Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(2,Neighbor::Left),Some(1));
+        assert_eq!(field.get_neighbor_id(2,Neighbor::Right),None);
+        assert_eq!(field.get_neighbor_id(2,Neighbor::LowerLeft),Some(4));
+        assert_eq!(field.get_neighbor_id(2,Neighbor::LowerMiddle),Some(5));
+        assert_eq!(field.get_neighbor_id(2,Neighbor::LowerRight),None);
 
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::UpperLeft),None);
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::UpperMiddle),Some(0));
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::UpperRight),Some(1));
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::Left),None);
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::Right),Some(4));
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::LowerLeft),None);
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::LowerMiddle),Some(6));
-        assert_eq!(field.get_neighbor_id(3,super::Neighbor::LowerRight),Some(7));
+        assert_eq!(field.get_neighbor_id(3,Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(3,Neighbor::UpperMiddle),Some(0));
+        assert_eq!(field.get_neighbor_id(3,Neighbor::UpperRight),Some(1));
+        assert_eq!(field.get_neighbor_id(3,Neighbor::Left),None);
+        assert_eq!(field.get_neighbor_id(3,Neighbor::Right),Some(4));
+        assert_eq!(field.get_neighbor_id(3,Neighbor::LowerLeft),None);
+        assert_eq!(field.get_neighbor_id(3,Neighbor::LowerMiddle),Some(6));
+        assert_eq!(field.get_neighbor_id(3,Neighbor::LowerRight),Some(7));
 
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::UpperLeft),Some(0));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::UpperMiddle),Some(1));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::UpperRight),Some(2));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::Left),Some(3));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::Right),Some(5));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::LowerLeft),Some(6));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::LowerMiddle),Some(7));
-        assert_eq!(field.get_neighbor_id(4,super::Neighbor::LowerRight),Some(8));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::UpperLeft),Some(0));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::UpperMiddle),Some(1));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::UpperRight),Some(2));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::Left),Some(3));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::Right),Some(5));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::LowerLeft),Some(6));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::LowerMiddle),Some(7));
+        assert_eq!(field.get_neighbor_id(4,Neighbor::LowerRight),Some(8));
 
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::UpperLeft),Some(1));
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::UpperMiddle),Some(2));
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::UpperRight),None);
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::Left),Some(4));
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::Right),None);
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::LowerLeft),Some(7));
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::LowerMiddle),Some(8));
-        assert_eq!(field.get_neighbor_id(5,super::Neighbor::LowerRight),None);
+        assert_eq!(field.get_neighbor_id(5,Neighbor::UpperLeft),Some(1));
+        assert_eq!(field.get_neighbor_id(5,Neighbor::UpperMiddle),Some(2));
+        assert_eq!(field.get_neighbor_id(5,Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(5,Neighbor::Left),Some(4));
+        assert_eq!(field.get_neighbor_id(5,Neighbor::Right),None);
+        assert_eq!(field.get_neighbor_id(5,Neighbor::LowerLeft),Some(7));
+        assert_eq!(field.get_neighbor_id(5,Neighbor::LowerMiddle),Some(8));
+        assert_eq!(field.get_neighbor_id(5,Neighbor::LowerRight),None);
 
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::UpperLeft),None);
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::UpperMiddle),Some(3));
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::UpperRight),Some(4));
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::Left),None);
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::Right),Some(7));
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::LowerLeft),None);
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::LowerMiddle),None);
-        assert_eq!(field.get_neighbor_id(6,super::Neighbor::LowerRight),None);
+        assert_eq!(field.get_neighbor_id(6,Neighbor::UpperLeft),None);
+        assert_eq!(field.get_neighbor_id(6,Neighbor::UpperMiddle),Some(3));
+        assert_eq!(field.get_neighbor_id(6,Neighbor::UpperRight),Some(4));
+        assert_eq!(field.get_neighbor_id(6,Neighbor::Left),None);
+        assert_eq!(field.get_neighbor_id(6,Neighbor::Right),Some(7));
+        assert_eq!(field.get_neighbor_id(6,Neighbor::LowerLeft),None);
+        assert_eq!(field.get_neighbor_id(6,Neighbor::LowerMiddle),None);
+        assert_eq!(field.get_neighbor_id(6,Neighbor::LowerRight),None);
 
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::UpperLeft),Some(3));
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::UpperMiddle),Some(4));
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::UpperRight),Some(5));
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::Left),Some(6));
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::Right),Some(8));
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::LowerLeft),None);
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::LowerMiddle),None);
-        assert_eq!(field.get_neighbor_id(7,super::Neighbor::LowerRight),None);
+        assert_eq!(field.get_neighbor_id(7,Neighbor::UpperLeft),Some(3));
+        assert_eq!(field.get_neighbor_id(7,Neighbor::UpperMiddle),Some(4));
+        assert_eq!(field.get_neighbor_id(7,Neighbor::UpperRight),Some(5));
+        assert_eq!(field.get_neighbor_id(7,Neighbor::Left),Some(6));
+        assert_eq!(field.get_neighbor_id(7,Neighbor::Right),Some(8));
+        assert_eq!(field.get_neighbor_id(7,Neighbor::LowerLeft),None);
+        assert_eq!(field.get_neighbor_id(7,Neighbor::LowerMiddle),None);
+        assert_eq!(field.get_neighbor_id(7,Neighbor::LowerRight),None);
 
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::UpperLeft),Some(4));
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::UpperMiddle),Some(5));
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::UpperRight),None);
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::Left),Some(7));
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::Right),None);
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::LowerLeft),None);
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::LowerMiddle),None);
-        assert_eq!(field.get_neighbor_id(8,super::Neighbor::LowerRight),None);
+        assert_eq!(field.get_neighbor_id(8,Neighbor::UpperLeft),Some(4));
+        assert_eq!(field.get_neighbor_id(8,Neighbor::UpperMiddle),Some(5));
+        assert_eq!(field.get_neighbor_id(8,Neighbor::UpperRight),None);
+        assert_eq!(field.get_neighbor_id(8,Neighbor::Left),Some(7));
+        assert_eq!(field.get_neighbor_id(8,Neighbor::Right),None);
+        assert_eq!(field.get_neighbor_id(8,Neighbor::LowerLeft),None);
+        assert_eq!(field.get_neighbor_id(8,Neighbor::LowerMiddle),None);
+        assert_eq!(field.get_neighbor_id(8,Neighbor::LowerRight),None);
     }
 
     #[test]
     fn cell_dies_for_no_neighbor() {
-        let mut field = super::Field::new((3,3), (8,8));
+        let mut field = Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,false,false,
@@ -299,7 +310,7 @@ mod tests {
     }
     #[test]
     fn cell_dies_for_1_neighbor() {
-        let mut field = super::Field::new((3,3), (8,8));
+        let mut field = Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,false,
@@ -321,7 +332,7 @@ mod tests {
     }
     #[test]
     fn cell_lives_for_2_neighbors() {
-        let mut field = super::Field::new((3,3), (8,8));
+        let mut field = Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,true,
@@ -342,7 +353,7 @@ mod tests {
     }
     #[test]
     fn cell_lives_borns_for_3_neighbors() {
-        let mut field = super::Field::new((3,3), (8,8));
+        let mut field = Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,true,
@@ -363,7 +374,7 @@ mod tests {
     }
     #[test]
     fn cell_dies_for_4_or_more_neighbors(){
-        let mut field = super::Field::new((3,3), (8,8));
+        let mut field = Field::new((3,3), (8,8));
         let mut result;
         let live = vec![
             false,true,true,
