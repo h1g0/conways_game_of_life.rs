@@ -2,7 +2,7 @@ extern crate piston_window;
 use piston_window::*;
 
 extern crate rand;
-use rand::Rng;
+use rand::{thread_rng, Rng};
 
 #[derive(Clone,Copy)]
 struct Cell{
@@ -153,9 +153,10 @@ impl Field{
             }
         }
     }
-    pub fn set_random_state_for_all_cels(&mut self){
+    pub fn set_random_state_for_all_cels(&mut self, alive_probability: f64){
+        let mut rng = thread_rng();
         for i in 0..self.cell.len(){
-            // TODO: ここから
+            self.cell[i].alive = rng.gen_bool(alive_probability);
         }
     }
 
