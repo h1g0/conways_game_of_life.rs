@@ -14,19 +14,25 @@ fn main() {
         .samples(4)
         .build()
         .unwrap_or_else(|e| { panic!("Failed to build PistonWindow: {}", e) });
+    window.events.set_max_fps(10);
+    window.events.set_ups(10);
+
+    let mut field = lifegame::Field::new((64,48), (640,480));
+    field.set_random_state_for_all_cels(0.3);
 
     while let Some(e) = window.next() {
         match e{
             Event::Loop(Loop::Render(_))=>{
-                //レンダリング処理
-                window.draw_2d(&e, |_c, g, _d| {
+                window.draw_2d(&e, |c, g, _d| {
+                    c.draw_state.blend(draw_state::Blend::Add);
                     clear([0.0, 0.0, 0.0, 1.0], g);
-                    _c.draw_state.blend(draw_state::Blend::Add);
-                    //ここにゲームの処理何か書く
+                    field.draw_field(c, g);
+                    field.update_state();
+                    field.draw_cells(c, g);
                 });
             }
             Event::Loop(Loop::Update(_))=>{
-                //アップデート処理
+                field.set_next_gen_state();
             }
             _=>{}
         }

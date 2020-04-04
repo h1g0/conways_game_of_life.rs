@@ -57,8 +57,13 @@ impl Field{
         return result;
     }
 
-    pub fn draw_field(&self, window: &mut PistonWindow, args: &RenderArgs){
-        unimplemented!();
+    pub fn draw_field(&self, c: Context, g: &mut G2d){
+        for i in 0..=self.x_num {
+            line([0.0,0.3,0.0,0.5], 0.5 , [self.cell_size.width * i as f64,0.0,self.cell_size.width * i as f64,self.height as f64], c.transform, g);
+        }
+        for i in 0..=self.y_num {
+            line([0.0,0.3,0.0,0.5], 0.5 , [0.0,self.cell_size.height * i as f64,self.width as f64,self.cell_size.width * i as f64], c.transform, g);
+        }
     }
 
     pub fn update_state(&mut self){
@@ -144,6 +149,8 @@ impl Field{
             return false;
         }
     }
+
+    #[allow(dead_code)]
     pub fn set_state_for_all_cells(&mut self, alive:Vec<bool>){
         for i in 0..self.cell.len(){
             if i < alive.len(){
@@ -152,16 +159,27 @@ impl Field{
                 self.cell[i].alive = false;
             }
         }
+        self.set_next_gen_state();
     }
+
     pub fn set_random_state_for_all_cels(&mut self, alive_probability: f64){
         let mut rng = thread_rng();
         for i in 0..self.cell.len(){
-            self.cell[i].alive = rng.gen_bool(alive_probability);
+            self.set_state(i, rng.gen_bool(alive_probability));
         }
+        self.set_next_gen_state();
     }
 
-    pub fn draw_cells(){
-        unimplemented!();
+    pub fn draw_cells(&self, c: Context, g: &mut G2d){
+        for i in 0..self.cell.len() {
+            if self.get_state(i){
+                let x = i % self.x_num;
+                let y = (i - x) / self.x_num;
+                let square = rectangle::square(self.cell_size.width * x as f64, self.cell_size.height * y as f64, self.cell_size.width);
+                let color = [0.1,0.6,0.0,1.5];
+                rectangle(color,square,c.transform,g);
+            }
+        }
     }
 
     pub fn set_next_gen_state(&mut self){
