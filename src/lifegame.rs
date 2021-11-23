@@ -95,6 +95,9 @@ impl Field {
     }
 
     pub fn set_state(&mut self, id: usize, alive: bool) {
+        if id >= self.cell.len() {
+            return;
+        }
         self.cell[id].alive = alive;
     }
     pub fn get_state(&self, id: usize) -> Option<bool> {
@@ -240,15 +243,9 @@ impl Field {
             .count();
 
         if self.get_state(id).unwrap_or(false) {
-            match alive_neighbor {
-                2 | 3 => true,
-                _ => false,
-            }
+            matches!(alive_neighbor,2|3)
         } else {
-            match alive_neighbor {
-                3 => true,
-                _ => false,
-            }
+            matches!(alive_neighbor,3)
         }
     }
 }
