@@ -2,10 +2,10 @@
 name = "lifegame-rs"
 version = "0.1.0"
 authors = ["hi_go <me@clutte.red>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-piston_window = "0.107.0"
-rand = "0.7.3"
+piston_window = "0.120.0"
+rand = "0.8.4"
