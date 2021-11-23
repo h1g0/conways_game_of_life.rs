@@ -1,9 +1,7 @@
-extern crate piston_window;
 use piston_window::*;
-
 mod lifegame;
 
-const WINDOW_TITLE: &str = "LifeGame.rs";
+const WINDOW_TITLE: &str = "Conway's Game of Life";
 const WINDOW_SIZE: Size = Size {
     width: 640.0,
     height: 480.0,

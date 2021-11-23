@@ -1,7 +1,6 @@
-extern crate piston_window;
 use piston_window::*;
-
-extern crate rand;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
 use rand::{thread_rng, Rng};
 
 #[derive(Clone, Copy)]
@@ -10,6 +9,8 @@ struct Cell {
     alive: bool,
     alive_in_next_gen: bool,
 }
+
+#[derive(Clone, Copy, EnumIter, Debug, PartialEq)]
 enum Neighbor {
     UpperLeft,
     UpperMiddle,
@@ -31,7 +32,7 @@ pub struct Field {
 }
 
 impl Field {
-    pub fn new(xy_num: (usize, usize), wh: (usize, usize)) -> Field {
+    pub fn new(xy_num: (usize, usize), wh: (usize, usize)) -> Self {
         let mut result: Field = Field {
             width: wh.0,
             height: wh.1,
@@ -53,7 +54,7 @@ impl Field {
         for i in 0..result.cell.len() {
             result.cell[i].id = i;
         }
-        return result;
+        result
     }
 
     pub fn draw_field(&self, c: Context, g: &mut G2d) {
@@ -96,11 +97,12 @@ impl Field {
     pub fn set_state(&mut self, id: usize, alive: bool) {
         self.cell[id].alive = alive;
     }
-    pub fn get_state(&self, id: usize) -> bool {
+    pub fn get_state(&self, id: usize) -> Option<bool> {
         if id >= self.cell.len() {
-            panic!("The cell[{}] is not exit!", id);
+            None
+        } else {
+            Some(self.cell[id].alive)
         }
-        return self.cell[id].alive;
     }
 
     fn get_neighbor_id(&self, id: usize, neighbor: Neighbor) -> Option<usize> {
@@ -184,9 +186,9 @@ impl Field {
     }
     fn get_neighbor_state(&self, id: usize, neighbor: Neighbor) -> bool {
         if let Some(neighbor_id) = self.get_neighbor_id(id, neighbor) {
-            return self.get_state(neighbor_id);
+            self.get_state(neighbor_id).unwrap_or(false)
         } else {
-            return false;
+            false
         }
     }
 
@@ -212,7 +214,7 @@ impl Field {
 
     pub fn draw_cells(&self, c: Context, g: &mut G2d) {
         for i in 0..self.cell.len() {
-            if self.get_state(i) {
+            if self.get_state(i).unwrap_or(false) {
                 let x = i % self.x_num;
                 let y = (i - x) / self.x_num;
                 let square = rectangle::square(
@@ -233,42 +235,11 @@ impl Field {
     }
 
     fn get_next_gen_state_for_one_cell(&self, id: usize) -> bool {
-        let alive_neighbor =
-            0 + if self.get_neighbor_state(id, Neighbor::UpperLeft) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::UpperMiddle) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::UpperRight) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::Left) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::Right) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::LowerLeft) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::LowerMiddle) {
-                1
-            } else {
-                0
-            } + if self.get_neighbor_state(id, Neighbor::LowerRight) {
-                1
-            } else {
-                0
-            };
+        let alive_neighbor = Neighbor::iter()
+            .filter(|x| self.get_neighbor_state(id, *x))
+            .count();
 
-        if self.get_state(id) {
+        if self.get_state(id).unwrap_or(false) {
             match alive_neighbor {
                 2 | 3 => true,
                 _ => false,

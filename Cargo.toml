@@ -9,3 +9,5 @@ edition = "2021"
 [dependencies]
 piston_window = "0.120.0"
 rand = "0.8.4"
+strum = "0.23"
+strum_macros = "0.23"
