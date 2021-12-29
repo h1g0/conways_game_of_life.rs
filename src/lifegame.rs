@@ -1,4 +1,4 @@
-use piston_window::*;
+use bevy::prelude::*;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 use rand::{thread_rng, Rng};
@@ -47,8 +47,8 @@ impl Field {
                 xy_num.0 * xy_num.1
             ],
             cell_size: Size {
-                width: (wh.0 / xy_num.0) as f64,
-                height: (wh.1 / xy_num.1) as f64,
+                width: (wh.0 / xy_num.0) as f32,
+                height: (wh.1 / xy_num.1) as f32,
             },
         };
         for i in 0..result.cell.len() {
@@ -57,35 +57,8 @@ impl Field {
         result
     }
 
-    pub fn draw_field(&self, c: Context, g: &mut G2d) {
-        for i in 0..=self.x_num {
-            line(
-                [0.0, 0.3, 0.0, 0.5],
-                0.5,
-                [
-                    self.cell_size.width * i as f64,
-                    0.0,
-                    self.cell_size.width * i as f64,
-                    self.height as f64,
-                ],
-                c.transform,
-                g,
-            );
-        }
-        for i in 0..=self.y_num {
-            line(
-                [0.0, 0.3, 0.0, 0.5],
-                0.5,
-                [
-                    0.0,
-                    self.cell_size.height * i as f64,
-                    self.width as f64,
-                    self.cell_size.width * i as f64,
-                ],
-                c.transform,
-                g,
-            );
-        }
+    pub fn draw_field() {
+        todo!();
     }
 
     pub fn update_state(&mut self) {
@@ -215,20 +188,8 @@ impl Field {
         self.set_next_gen_state();
     }
 
-    pub fn draw_cells(&self, c: Context, g: &mut G2d) {
-        for i in 0..self.cell.len() {
-            if self.get_state(i).unwrap_or(false) {
-                let x = i % self.x_num;
-                let y = (i - x) / self.x_num;
-                let square = rectangle::square(
-                    self.cell_size.width * x as f64,
-                    self.cell_size.height * y as f64,
-                    self.cell_size.width,
-                );
-                let color = [0.1, 0.6, 0.0, 1.5];
-                rectangle(color, square, c.transform, g);
-            }
-        }
+    pub fn draw_cells() {
+        todo!();
     }
 
     pub fn set_next_gen_state(&mut self) {
