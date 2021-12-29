@@ -1,6 +1,6 @@
-# conways_game_of_life.rs
+# conways-game-of-life.rs
 
-["Conway's Game of Life"](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) written in Rust (by using Piston).
+["Conway's Game of Life"](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) written in Rust (by using Bevy).
 
 ## Screenshot
 
