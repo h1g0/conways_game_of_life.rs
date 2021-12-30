@@ -1,13 +1,14 @@
 use bevy::prelude::*;
+use rand::{thread_rng, Rng};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-use rand::{thread_rng, Rng};
 
 #[derive(Clone, Copy)]
 struct Cell {
     id: usize,
     alive: bool,
     alive_in_next_gen: bool,
+    entity: Option<Entity>,
 }
 
 #[derive(Clone, Copy, EnumIter, Debug, PartialEq)]
@@ -29,6 +30,7 @@ pub struct Field {
     y_num: usize,
     cell: Vec<Cell>,
     cell_size: Size,
+    cell_material: Handle<ColorMaterial>,
 }
 
 impl Field {
@@ -43,6 +45,7 @@ impl Field {
                     id: 0,
                     alive: false,
                     alive_in_next_gen: false,
+                    entity: None,
                 };
                 xy_num.0 * xy_num.1
             ],
@@ -50,13 +53,44 @@ impl Field {
                 width: (wh.0 / xy_num.0) as f32,
                 height: (wh.1 / xy_num.1) as f32,
             },
+            cell_material: Handle::default(),
         };
         for i in 0..result.cell.len() {
             result.cell[i].id = i;
         }
         result
     }
+    pub fn setup(
+        mut commands: Commands,
+        mut q: Query<(&mut Field, &mut Transform)>,
+        mut materials: ResMut<Assets<ColorMaterial>>,
+    ) {
+        println!("Field::setup");
+        for (mut field, _) in q.iter_mut() {
+            println!("Field::setup: field");
+            field.cell_material = materials.add(Color::rgb(0.0, 1.0, 0.0).into());
+            field.set_random_state_for_all_cels(0.3);
+            for i in 0..field.cell.len() {
+                if field.cell[i].alive {
+                    field.cell[i].entity = Field::spawn_cells(&mut commands, &mut field, i);
+                }
+            }
+            field.debug_print();
+        }
+    }
 
+    fn debug_print(&self){
+        for i in 0..self.cell.len() {
+            if self.cell[i].alive {
+                print!("@");
+            }else{
+                print!("_");
+            }
+            if i % self.x_num == self.x_num - 1 {
+                println!();
+            }
+        }
+    }
     pub fn draw_field() {
         todo!();
     }
@@ -188,8 +222,45 @@ impl Field {
         self.set_next_gen_state();
     }
 
-    pub fn draw_cells() {
-        todo!();
+    fn spawn_cells(
+        mut commands: &mut Commands,
+        field: &mut Field,
+        cell_id: usize,
+    ) -> Option<Entity> {
+        Some(
+            commands
+                .spawn_bundle(
+                    SpriteBundle {
+                        material: field.cell_material.clone(),
+                        ..Default::default()
+                    }
+                    .transform
+                    .translation = Vec3::new(
+                        (cell_id % field.x_num) as f32 * field.cell_size.width
+                            - field.width as f32 / 2.0,
+                        ((cell_id - (cell_id % field.x_num)) / field.x_num) as f32
+                            * field.cell_size.height
+                            - field.height as f32 / 2.0,
+                        0.0,
+                    ),
+                )
+                .id(),
+        )
+    }
+    pub fn update_field(mut commands: Commands, mut q: Query<(&mut Field, &mut Transform)>) {
+        for (mut field, _) in q.iter_mut() {
+            field.set_next_gen_state();
+            for i in 0..field.cell.len() {
+                if !field.cell[i].alive && field.cell[i].alive_in_next_gen {
+                    field.cell[i].entity = Field::spawn_cells(&mut commands, &mut field, i);
+                } else if field.cell[i].alive && !field.cell[i].alive_in_next_gen {
+                    if let Some(e) = field.cell[i].entity {
+                        commands.entity(e).despawn();
+                    }
+                }
+            }
+            field.update_state();
+        }
     }
 
     pub fn set_next_gen_state(&mut self) {
@@ -204,9 +275,9 @@ impl Field {
             .count();
 
         if self.get_state(id).unwrap_or(false) {
-            matches!(alive_neighbor,2|3)
+            matches!(alive_neighbor, 2 | 3)
         } else {
-            matches!(alive_neighbor,3)
+            matches!(alive_neighbor, 3)
         }
     }
 }
