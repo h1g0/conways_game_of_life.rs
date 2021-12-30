@@ -62,11 +62,11 @@ impl Field {
     }
     pub fn setup(
         mut commands: Commands,
-        mut q: Query<(&mut Field, &mut Transform)>,
+        mut q: Query<&mut Field>,
         mut materials: ResMut<Assets<ColorMaterial>>,
     ) {
         println!("Field::setup");
-        for (mut field, _) in q.iter_mut() {
+        for mut field in q.iter_mut() {
             println!("Field::setup: field");
             field.cell_material = materials.add(Color::rgb(0.0, 1.0, 0.0).into());
             field.set_random_state_for_all_cels(0.3);
@@ -91,9 +91,7 @@ impl Field {
             }
         }
     }
-    pub fn draw_field() {
-        todo!();
-    }
+
 
     pub fn update_state(&mut self) {
         for c in &mut self.cell {
@@ -223,7 +221,7 @@ impl Field {
     }
 
     fn spawn_cells(
-        mut commands: &mut Commands,
+        commands: &mut Commands,
         field: &mut Field,
         cell_id: usize,
     ) -> Option<Entity> {
@@ -247,8 +245,8 @@ impl Field {
                 .id(),
         )
     }
-    pub fn update_field(mut commands: Commands, mut q: Query<(&mut Field, &mut Transform)>) {
-        for (mut field, _) in q.iter_mut() {
+    pub fn update_field(mut commands: Commands, mut q: Query<&mut Field>) {
+        for mut field in q.iter_mut() {
             field.set_next_gen_state();
             for i in 0..field.cell.len() {
                 if !field.cell[i].alive && field.cell[i].alive_in_next_gen {

@@ -6,9 +6,6 @@ const WINDOW_TITLE: &str = "Conway's Game of Life";
 const WINDOW_SIZE: (f32, f32) = (640.0, 480.0);
 
 fn main() {
-    let mut field = lifegame::Field::new((64, 48), (640, 480));
-    field.set_random_state_for_all_cels(0.3);
-
     App::build()
         .insert_resource(WindowDescriptor {
             title: WINDOW_TITLE.to_string(),
@@ -17,7 +14,6 @@ fn main() {
             resizable: false,
             ..Default::default()
         })
-        .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_startup_system(setup.system())
         .add_startup_system(Field::setup.system())
         .add_system_set_to_stage(
@@ -32,11 +28,10 @@ fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     commands
         .spawn_bundle(
             SpriteBundle {
-                material: materials.add(Color::rgb(1.0, 1.0, 1.0).into()),
+                material: materials.add(Color::rgb(0.0, 1.0, 0.0).into()),
+                sprite: Sprite::new(Vec2::new(WINDOW_SIZE.0, WINDOW_SIZE.1)),
                 ..Default::default()
             }
-            .transform
-            .scale = Vec3::new(WINDOW_SIZE.0, WINDOW_SIZE.1, 0.0),
         )
         .insert(lifegame::Field::new((64, 48), (640, 480)));
 }
