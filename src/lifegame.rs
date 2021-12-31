@@ -79,12 +79,13 @@ impl Field {
         }
         //field.debug_print();
 
-        let field_id = commands
+        commands
         .spawn()
         .insert(field)
         .id();
     }
 
+    #[allow(dead_code)]
     fn debug_print(&self){
         for i in 0..self.cell.len() {
             if self.cell[i].alive {
