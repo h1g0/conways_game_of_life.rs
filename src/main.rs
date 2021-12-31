@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{core::FixedTimestep, prelude::*};
 use lifegame::Field;
 mod lifegame;
 
@@ -14,24 +14,18 @@ fn main() {
             resizable: false,
             ..Default::default()
         })
+        .insert_resource(ClearColor(Color::rgb(1.0, 1.0, 1.0)))
         .add_startup_system(setup.system())
         .add_startup_system(Field::setup.system())
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
-            SystemSet::new().with_system(Field::update_field.system()),
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(6.0/60.0))
+                .with_system(Field::update.system()),
         )
         .add_plugins(DefaultPlugins)
         .run();
 }
-fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
+fn setup(mut commands: Commands) {
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands
-        .spawn_bundle(
-            SpriteBundle {
-                material: materials.add(Color::rgb(0.0, 1.0, 0.0).into()),
-                sprite: Sprite::new(Vec2::new(WINDOW_SIZE.0, WINDOW_SIZE.1)),
-                ..Default::default()
-            }
-        )
-        .insert(lifegame::Field::new((64, 48), (640, 480)));
 }

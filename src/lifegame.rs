@@ -3,7 +3,7 @@ use rand::{thread_rng, Rng};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct Cell {
     id: usize,
     alive: bool,
@@ -23,11 +23,12 @@ enum Neighbor {
     LowerRight,
 }
 
+#[derive(Debug)]
 pub struct Field {
     width: usize,
     height: usize,
     x_num: usize,
-    y_num: usize,
+    //y_num: usize,
     cell: Vec<Cell>,
     cell_size: Size,
     cell_material: Handle<ColorMaterial>,
@@ -39,7 +40,7 @@ impl Field {
             width: wh.0,
             height: wh.1,
             x_num: xy_num.0,
-            y_num: xy_num.1,
+            //y_num: xy_num.1,
             cell: vec![
                 Cell {
                     id: 0,
@@ -61,22 +62,27 @@ impl Field {
         result
     }
     pub fn setup(
+        windows: Res<Windows>,
         mut commands: Commands,
-        mut q: Query<&mut Field>,
         mut materials: ResMut<Assets<ColorMaterial>>,
     ) {
-        println!("Field::setup");
-        for mut field in q.iter_mut() {
-            println!("Field::setup: field");
-            field.cell_material = materials.add(Color::rgb(0.0, 1.0, 0.0).into());
-            field.set_random_state_for_all_cels(0.3);
-            for i in 0..field.cell.len() {
-                if field.cell[i].alive {
-                    field.cell[i].entity = Field::spawn_cells(&mut commands, &mut field, i);
-                }
+        let width = windows.get_primary().unwrap().width();
+        let height = windows.get_primary().unwrap().height();
+
+        let mut field = Field::new((64, 48), (width as usize, height as usize));
+        field.cell_material = materials.add(Color::rgb(0.0, 1.0, 0.0).into());
+        field.set_random_state_for_all_cels(0.3);
+        for i in 0..field.cell.len() {
+            if field.cell[i].alive {
+                field.cell[i].entity = Field::spawn_cells(&mut commands, &mut field, i);
             }
-            field.debug_print();
         }
+        //field.debug_print();
+
+        let field_id = commands
+        .spawn()
+        .insert(field)
+        .id();
     }
 
     fn debug_print(&self){
@@ -230,22 +236,22 @@ impl Field {
                 .spawn_bundle(
                     SpriteBundle {
                         material: field.cell_material.clone(),
+                        sprite: Sprite::new(Vec2::new(field.cell_size.width, field.cell_size.height)),
+                        transform: Transform::from_translation(Vec3::new(
+                            (cell_id % field.x_num) as f32 * field.cell_size.width
+                                - field.width as f32 / 2.0,
+                            ((cell_id - (cell_id % field.x_num)) / field.x_num) as f32
+                                * field.cell_size.height
+                                - field.height as f32 / 2.0,
+                            1.0,
+                        )),
                         ..Default::default()
                     }
-                    .transform
-                    .translation = Vec3::new(
-                        (cell_id % field.x_num) as f32 * field.cell_size.width
-                            - field.width as f32 / 2.0,
-                        ((cell_id - (cell_id % field.x_num)) / field.x_num) as f32
-                            * field.cell_size.height
-                            - field.height as f32 / 2.0,
-                        0.0,
-                    ),
                 )
                 .id(),
         )
     }
-    pub fn update_field(mut commands: Commands, mut q: Query<&mut Field>) {
+    pub fn update(mut commands: Commands, mut q: Query<&mut Field>) {
         for mut field in q.iter_mut() {
             field.set_next_gen_state();
             for i in 0..field.cell.len() {
