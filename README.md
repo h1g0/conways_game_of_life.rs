@@ -12,6 +12,10 @@
 
 ## Build / Run
 
+Prerequisite:
+
+- You should have `rustup` installed and have all the necessary tools for Rust development such as `cargo` and `rustc`.
+
 ### Run on your computer (Windows/Mac/Linux)
 
 Just
