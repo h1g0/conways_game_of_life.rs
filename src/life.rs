@@ -79,18 +79,15 @@ impl Field {
         }
         //field.debug_print();
 
-        commands
-        .spawn()
-        .insert(field)
-        .id();
+        commands.spawn().insert(field).id();
     }
 
     #[allow(dead_code)]
-    fn debug_print(&self){
+    fn debug_print(&self) {
         for i in 0..self.cell.len() {
             if self.cell[i].alive {
                 print!("@");
-            }else{
+            } else {
                 print!("_");
             }
             if i % self.x_num == self.x_num - 1 {
@@ -98,7 +95,6 @@ impl Field {
             }
         }
     }
-
 
     pub fn update_state(&mut self) {
         for c in &mut self.cell {
@@ -227,28 +223,22 @@ impl Field {
         self.set_next_gen_state();
     }
 
-    fn spawn_cells(
-        commands: &mut Commands,
-        field: &mut Field,
-        cell_id: usize,
-    ) -> Option<Entity> {
+    fn spawn_cells(commands: &mut Commands, field: &mut Field, cell_id: usize) -> Option<Entity> {
         Some(
             commands
-                .spawn_bundle(
-                    SpriteBundle {
-                        material: field.cell_material.clone(),
-                        sprite: Sprite::new(Vec2::new(field.cell_size.width, field.cell_size.height)),
-                        transform: Transform::from_translation(Vec3::new(
-                            (cell_id % field.x_num) as f32 * field.cell_size.width
-                                - field.width as f32 / 2.0,
-                            ((cell_id - (cell_id % field.x_num)) / field.x_num) as f32
-                                * field.cell_size.height
-                                - field.height as f32 / 2.0,
-                            1.0,
-                        )),
-                        ..Default::default()
-                    }
-                )
+                .spawn_bundle(SpriteBundle {
+                    material: field.cell_material.clone(),
+                    sprite: Sprite::new(Vec2::new(field.cell_size.width, field.cell_size.height)),
+                    transform: Transform::from_translation(Vec3::new(
+                        (cell_id % field.x_num) as f32 * field.cell_size.width
+                            - field.width as f32 / 2.0,
+                        ((cell_id - (cell_id % field.x_num)) / field.x_num) as f32
+                            * field.cell_size.height
+                            - field.height as f32 / 2.0,
+                        1.0,
+                    )),
+                    ..Default::default()
+                })
                 .id(),
         )
     }
