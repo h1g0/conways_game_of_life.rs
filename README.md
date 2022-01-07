@@ -31,3 +31,7 @@ cargo run
 3. The following actions are required to work around [an issue](https://github.com/bevyengine/bevy/issues/3099) in Bevy 0.5.0, which should be fixed in the next release of Bevy; Run `cargo update -p tracing-wasm --precise 0.2.0`
 4. Run `wasm-pack build --target web --release`
 5. `.wasm` files, etc. will be generated under `pkg` directory.
+6. Create an HTML file like [this](https://bevy-cheatbook.github.io/platforms/wasm/wasm-pack.html#web-page).
+7. Host a web server or get a web server somewhere.
+8. Deploy the `pkg` directory and the HTML file to that server.
+9. Access the HTML file on that server with a modern browser.
